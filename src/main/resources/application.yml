@@ -1,0 +1,17 @@
+server:
+  port: '8088'
+spring:
+  output:
+    ansi:
+      enabled: always
+  data:
+    mongodb:
+      database: prefsim-notary
+      uri: 'mongodb://localhost:27017'
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+jwt:
+  tokenValidity: '3600000'
+  signingKey: prefsim-notary
+
