@@ -1,5 +1,6 @@
 package com.raccoon.prefsimnotary.service;
 
+import com.raccoon.prefsimnotary.model.document.Term;
 import com.raccoon.prefsimnotary.model.dto.request.PreferenceRequestDto;
 import com.raccoon.prefsimnotary.model.dto.request.UserLoginRequestDto;
 import com.raccoon.prefsimnotary.model.dto.request.UserRegisterRequestDto;
@@ -22,10 +23,13 @@ public interface UserService {
 
     User getCurrentUser();
 
-    User createPreference(PreferenceRequestDto preferenceRequestDto);
+    void createPreference(PreferenceRequestDto preferenceRequestDto);
 
-    List<PreferenceResultResponseDto> getAllUsersPreferenceResults();
+    List<User> getNotaryUserListSortedByRegisterNumber(Term activeTerm);
 
-    void updatePresumptiveNotaryOffice(User user, NotaryOffice notaryOffice);
+    void updateEstimatedNotaryOffice(User user, NotaryOffice notaryOffice);
+
+    List<PreferenceResultResponseDto> getPreferenceResults();
+
 
 }

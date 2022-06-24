@@ -13,27 +13,23 @@ import java.util.Set;
 @Data
 public class UserRegisterRequestDto {
 
-    /* TODO: username min/max length and  password pattern */
-
+    @Size(min = 6, max = 20, message = "username must be at least 6 most 20 char")
     @NotBlank(message = "username can not be empty")
-    @NotNull(message = "username can not be null")
     private String username;
 
+    @Pattern(regexp = "^(?=.*\\d)(?=.*[A-Z]).{6,8}$",
+            message = "min 6 and max 8 char, least 1 number, least 1 alphabet in capitals no special char allowed")
     @NotBlank(message = "password can not be empty")
-    @NotNull(message = "password can not be null")
     private String password;
 
-    @Email
+    @Email(message = "invalid email")
     @NotBlank(message = "email can not be empty")
-    @NotNull(message = "email can not be null")
     private String email;
 
     @NotBlank(message = "name can not be empty")
-    @NotNull(message = "name can not be null")
     private String name;
 
     @NotBlank(message = "surname can not be empty")
-    @NotNull(message = "surname can not be null")
     private String surname;
 
     @Min(value = 1, message = "There must be at least 1")

@@ -3,6 +3,7 @@ package com.raccoon.prefsimnotary.service;
 import com.raccoon.prefsimnotary.model.document.NotaryOffice;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface NotaryOfficeService {
@@ -13,7 +14,7 @@ public interface NotaryOfficeService {
 
     NotaryOffice getNotaryOffice(String notaryOfficeCode);
 
-    List<NotaryOffice> getActiveNotaryOfficeList(Set<String> id);
+    Set<NotaryOffice> getActiveNotaryOfficeListSortedByIncomeDesc(Set<String> id);
 
     void fetchNotaryOfficeListFromTnb(Integer year);
 }

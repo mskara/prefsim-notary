@@ -16,6 +16,7 @@ public enum ApiError {
     USER_NOT_FOUND(3001, ApiErrorType.RESOURCE_NOT_FOUND, HttpStatus.NOT_FOUND, "User Not Found!"),
     NOTARY_OFFICE_NOT_FOUND(3002, ApiErrorType.RESOURCE_NOT_FOUND, HttpStatus.NOT_FOUND, "Notary Office Not Found!"),
     ACTIVE_TERM_NOT_FOUND(3003, ApiErrorType.RESOURCE_NOT_FOUND, HttpStatus.NOT_FOUND, "Active Term Not Found"),
+    PREFERENCE_NOT_FOUND(3004, ApiErrorType.RESOURCE_NOT_FOUND, HttpStatus.NOT_FOUND, "Preference Not Found"),
 
     INVALID_PAYMENT_STATUS(7001, ApiErrorType.VALIDATION, HttpStatus.BAD_REQUEST, "Invalid Payment Status!"),
     INVALID_PREFERENCE_STATUS(7002, ApiErrorType.VALIDATION, HttpStatus.BAD_REQUEST, "Invalid Preference Status!"),

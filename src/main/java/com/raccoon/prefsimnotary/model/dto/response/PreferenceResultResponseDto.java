@@ -13,7 +13,7 @@ public class PreferenceResultResponseDto {
 
     private String name;
 
-    @JsonProperty("presumptiveNotaryOffice")
+    @JsonProperty("estimatedNotaryOffice")
     private NotaryOffice notaryOffice;
 
 }

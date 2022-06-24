@@ -2,22 +2,23 @@ package com.raccoon.prefsimnotary.service.impl;
 
 import com.raccoon.prefsimnotary.exception.ApiError;
 import com.raccoon.prefsimnotary.exception.PrefsimException;
-import com.raccoon.prefsimnotary.model.dto.file.TnbNotaryFileDto;
-import com.raccoon.prefsimnotary.model.dto.file.TnbNotaryOfficeIncomeFileDto;
 import com.raccoon.prefsimnotary.model.document.NotaryOffice;
 import com.raccoon.prefsimnotary.model.document.embedded.AnnualTransactionInfo;
 import com.raccoon.prefsimnotary.model.document.embedded.Contact;
+import com.raccoon.prefsimnotary.model.dto.file.TnbNotaryFileDto;
+import com.raccoon.prefsimnotary.model.dto.file.TnbNotaryOfficeIncomeFileDto;
 import com.raccoon.prefsimnotary.model.enums.Status;
 import com.raccoon.prefsimnotary.repository.NotaryOfficeRepository;
 import com.raccoon.prefsimnotary.repository.file.FileRepository;
 import com.raccoon.prefsimnotary.service.NotaryOfficeService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class NotaryOfficeServiceImpl implements NotaryOfficeService {
 
     private final NotaryOfficeRepository notaryOfficeRepository;
@@ -42,11 +43,15 @@ public class NotaryOfficeServiceImpl implements NotaryOfficeService {
     }
 
     @Override
-    public List<NotaryOffice> getActiveNotaryOfficeList(Set<String> notaryOfficeCodes) {
-        List<NotaryOffice> notaryOffices = notaryOfficeRepository
-                .findAllByNotaryOfficeCodeInAndPreferenceStatus(notaryOfficeCodes, Status.ACTIVE);
-        notaryOffices.sort(Comparator.comparing(notaryOffice -> notaryOffice.getLastAnnualTransactionInfo().getNetIncome()));
-        return notaryOffices;
+    public Set<NotaryOffice> getActiveNotaryOfficeListSortedByIncomeDesc(Set<String> notaryOfficeCodes) {
+        Comparator<NotaryOffice> incomeComparator = Comparator.comparingDouble(notaryOffice ->
+                notaryOffice.getLastAnnualTransactionInfo().getNetIncome());
+
+        return notaryOfficeRepository
+                .findAllByNotaryOfficeCodeInAndPreferenceStatus(notaryOfficeCodes, Status.ACTIVE)
+                .stream()
+                .sorted(incomeComparator.reversed())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     @Override
