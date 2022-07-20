@@ -1,7 +1,7 @@
-package com.raccoon.prefsimnotary.model.document.embedded;
+package com.raccoon.prefsimnotary.model.entity;
 
-import com.raccoon.prefsimnotary.model.document.NotaryOffice;
-import com.raccoon.prefsimnotary.model.document.Term;
+import com.raccoon.prefsimnotary.model.entity.NotaryOffice;
+import com.raccoon.prefsimnotary.model.entity.Term;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.DBRef;

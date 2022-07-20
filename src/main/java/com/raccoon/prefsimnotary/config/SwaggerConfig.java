@@ -21,6 +21,7 @@ public class SwaggerConfig {
     public static final String NOTARY_OFFICE_TAG = "Notary Office Service";
     public static final String TERM_TAG = "Term Service";
     public static final String USER_TAG = "User Service";
+    public static final String NOTARY_TAG = "Notary Service";
 
     @Bean
     public Docket api() {

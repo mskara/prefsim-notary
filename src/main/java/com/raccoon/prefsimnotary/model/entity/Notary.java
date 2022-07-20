@@ -1,24 +1,25 @@
-package com.raccoon.prefsimnotary.model.document.embedded;
+package com.raccoon.prefsimnotary.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.raccoon.prefsimnotary.exception.ApiError;
 import com.raccoon.prefsimnotary.exception.PrefsimException;
-import com.raccoon.prefsimnotary.model.document.NotaryOffice;
-import com.raccoon.prefsimnotary.model.document.Term;
 import com.raccoon.prefsimnotary.model.enums.Status;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 
-@Builder
-@Data
-public class NotaryInfo {
+@Getter
+@Setter
+public class Notary extends User {
 
-    private String name;
     private Integer notaryClass;
     private Integer registerNumber;
     private Status preferenceStatus;
@@ -48,26 +49,29 @@ public class NotaryInfo {
                 .stream()
                 .filter(preference -> preference.getTerm().equals(term))
                 .findFirst()
-                .orElseThrow(() -> new PrefsimException(ApiError.PREFERENCE_NOT_FOUND,
-                        "There is no preference for " + name + " in " + term.getTermCode()));
+                .orElseThrow(() -> new PrefsimException(ApiError.RESOURCE_NOT_FOUND,
+                        List.of("There is no preference for " + getFullName() + " in " + term.getTermCode())));
     }
 
     @JsonIgnore
     public void addPreference(Preference newPreference) {
 
+        final List<String> preferenceValidations = new ArrayList<>();
+
         if (!this.paymentStatus.equals(Status.ACTIVE)) {
-            throw new PrefsimException(ApiError.INVALID_PAYMENT_STATUS,
-                    "Notary payment status is not available to create preference.");
+            preferenceValidations.add("Notary payment status is not available to create preference.");
         }
 
         if (!this.preferenceStatus.equals(Status.ACTIVE)) {
-            throw new PrefsimException(ApiError.INVALID_PREFERENCE_STATUS,
-                    "Notary preference status is not available to create preference.");
+            preferenceValidations.add("Notary preference status is not available to create preference.");
         }
 
         if (!isNotaryClassAvailable(newPreference)) {
-            throw new PrefsimException(ApiError.INVALID_PREFERENCE_STATUS,
-                    "Notary class can not be lower than notary office class!");
+            preferenceValidations.add("Notary class can not be lower than notary office class!");
+        }
+
+        if (!preferenceValidations.isEmpty()) {
+            throw new PrefsimException(ApiError.INVALID_PREFERENCE_STATUS, preferenceValidations);
         }
 
         if (this.preferences != null) {

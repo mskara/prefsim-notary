@@ -1,17 +1,13 @@
 package com.raccoon.prefsimnotary.controller;
 
 import com.raccoon.prefsimnotary.config.SwaggerConfig;
-import com.raccoon.prefsimnotary.model.dto.request.PreferenceRequestDto;
 import com.raccoon.prefsimnotary.model.dto.request.UserLoginRequestDto;
-import com.raccoon.prefsimnotary.model.dto.request.UserRegisterRequestDto;
 import com.raccoon.prefsimnotary.model.dto.response.AccessTokenResponseDto;
-import com.raccoon.prefsimnotary.model.dto.response.PreferenceResultResponseDto;
-import com.raccoon.prefsimnotary.model.document.User;
+import com.raccoon.prefsimnotary.model.entity.User;
 import com.raccoon.prefsimnotary.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -35,8 +31,8 @@ public class UserController {
 
     @ApiOperation(value = "Register new user")
     @PostMapping("/register")
-    public ResponseEntity<AccessTokenResponseDto> register(@Valid @RequestBody UserRegisterRequestDto userRegisterRequestDto) {
-        return ResponseEntity.ok(userService.register(userRegisterRequestDto));
+    public ResponseEntity<AccessTokenResponseDto> register(@Valid @RequestBody User user) {
+        return ResponseEntity.ok(userService.register(user));
     }
 
     @ApiOperation(value = "Display user list")
@@ -58,21 +54,6 @@ public class UserController {
     @PreAuthorize("hasAuthority('PERM_VIEW_CURRENT_USER')")
     public ResponseEntity<User> getCurrentUser() {
         return ResponseEntity.ok(userService.getCurrentUser());
-    }
-
-    @ApiOperation(value = "Create new preference")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PostMapping("/preference")
-    @PreAuthorize("hasAuthority('PERM_CREATE_PREFERENCE')")
-    public void createPreference(@Valid @RequestBody PreferenceRequestDto preferenceRequestDto) {
-        userService.createPreference(preferenceRequestDto);
-    }
-
-    @ApiOperation(value = "Display preference results")
-    @GetMapping("/preference-results")
-    @PreAuthorize("hasAuthority('PERM_VIEW_PREFERENCE_RESULT')")
-    public ResponseEntity<List<PreferenceResultResponseDto>> getAllUsersPreferenceResults() {
-        return ResponseEntity.ok(userService.getPreferenceResults());
     }
 
 }

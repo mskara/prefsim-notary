@@ -2,7 +2,7 @@ package com.raccoon.prefsimnotary.service.impl;
 
 import com.raccoon.prefsimnotary.exception.ApiError;
 import com.raccoon.prefsimnotary.exception.PrefsimException;
-import com.raccoon.prefsimnotary.model.document.Term;
+import com.raccoon.prefsimnotary.model.entity.Term;
 import com.raccoon.prefsimnotary.model.enums.Status;
 import com.raccoon.prefsimnotary.repository.TermRepository;
 import com.raccoon.prefsimnotary.service.TermService;
@@ -27,7 +27,7 @@ public class TermServiceImpl implements TermService {
     @Override
     public Term getActiveTerm() {
         return termRepository.findByStatus(Status.ACTIVE)
-                .orElseThrow(() -> new PrefsimException(ApiError.ACTIVE_TERM_NOT_FOUND, "Active Term not found!"));
+                .orElseThrow(() -> new PrefsimException(ApiError.RESOURCE_NOT_FOUND, "Active Term not found!"));
     }
 
     @Override

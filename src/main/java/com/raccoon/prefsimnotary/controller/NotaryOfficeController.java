@@ -1,7 +1,7 @@
 package com.raccoon.prefsimnotary.controller;
 
 import com.raccoon.prefsimnotary.config.SwaggerConfig;
-import com.raccoon.prefsimnotary.model.document.NotaryOffice;
+import com.raccoon.prefsimnotary.model.entity.NotaryOffice;
 import com.raccoon.prefsimnotary.service.NotaryOfficeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

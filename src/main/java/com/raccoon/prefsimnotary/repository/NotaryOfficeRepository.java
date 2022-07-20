@@ -1,6 +1,6 @@
 package com.raccoon.prefsimnotary.repository;
 
-import com.raccoon.prefsimnotary.model.document.NotaryOffice;
+import com.raccoon.prefsimnotary.model.entity.NotaryOffice;
 import com.raccoon.prefsimnotary.model.enums.Status;
 import org.springframework.data.mongodb.repository.MongoRepository;
 

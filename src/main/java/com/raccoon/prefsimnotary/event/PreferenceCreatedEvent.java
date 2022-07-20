@@ -1,6 +1,6 @@
 package com.raccoon.prefsimnotary.event;
 
-import com.raccoon.prefsimnotary.model.document.User;
+import com.raccoon.prefsimnotary.model.entity.User;
 import org.springframework.context.ApplicationEvent;
 
 public class PreferenceCreatedEvent extends ApplicationEvent {

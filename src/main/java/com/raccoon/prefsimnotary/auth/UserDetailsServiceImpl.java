@@ -1,8 +1,6 @@
 package com.raccoon.prefsimnotary.auth;
 
 
-import com.raccoon.prefsimnotary.exception.ApiError;
-import com.raccoon.prefsimnotary.exception.PrefsimException;
 import com.raccoon.prefsimnotary.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,7 +17,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new PrefsimException(ApiError.USER_NOT_FOUND, "User not found : " + username));
+                .orElseThrow(() -> new UsernameNotFoundException("User is not found:" + username));
     }
 
 }

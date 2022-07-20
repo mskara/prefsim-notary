@@ -1,10 +1,12 @@
 package com.raccoon.prefsimnotary.service.impl;
 
 import com.raccoon.prefsimnotary.event.PreferenceCreatedEvent;
-import com.raccoon.prefsimnotary.model.document.NotaryOffice;
-import com.raccoon.prefsimnotary.model.document.Term;
-import com.raccoon.prefsimnotary.model.document.User;
+import com.raccoon.prefsimnotary.model.entity.Notary;
+import com.raccoon.prefsimnotary.model.entity.NotaryOffice;
+import com.raccoon.prefsimnotary.model.entity.Term;
+import com.raccoon.prefsimnotary.model.entity.User;
 import com.raccoon.prefsimnotary.service.NotaryOfficeService;
+import com.raccoon.prefsimnotary.service.NotaryService;
 import com.raccoon.prefsimnotary.service.TermService;
 import com.raccoon.prefsimnotary.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +23,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PreferenceEngine {
 
-    private final UserService userService;
+    private final NotaryService notaryService;
     private final NotaryOfficeService notaryOfficeService;
     private final TermService termService;
     private Map<String, String> preferenceTable;
@@ -30,28 +32,29 @@ public class PreferenceEngine {
     public void run() {
 
         final Term activeTerm = termService.getActiveTerm();
-        final List<User> users = userService.getNotaryUserListSortedByRegisterNumber(activeTerm);
+        final List<Notary> notaries = notaryService.getNotaryList(activeTerm);
 
-        preferenceTable = notaryOfficeService.getActiveNotaryOfficeList()
+        preferenceTable = notaryOfficeService
+                .getActiveNotaryOfficeList()
                 .parallelStream()
                 .collect(Collectors.toMap(NotaryOffice::getNotaryOfficeCode, status -> ""));
 
-        users.forEach(user -> {
-            final Set<NotaryOffice> notaryOfficeSet = user
-                    .getNotaryInfo()
-                    .getPreference(activeTerm)
-                    .getNotaryOfficeSet();
+        notaries.forEach(notary -> {
 
-            findFirstAvailableNotaryOffice(notaryOfficeSet).ifPresent(availableNotaryOffice -> {
-                userService.updateEstimatedNotaryOffice(user, availableNotaryOffice);
-                preferenceTable.put(availableNotaryOffice.getNotaryOfficeCode(), user.getUsername());
-            });
+            final Set<NotaryOffice> notaryOfficeSet = notary.getPreference(activeTerm).getNotaryOfficeSet();
+
+            findFirstAvailableNotaryOffice(notaryOfficeSet).ifPresent(
+                    availableNotaryOffice -> {
+                        notaryService.updateEstimatedNotaryOffice(notary, availableNotaryOffice);
+                        preferenceTable.put(availableNotaryOffice.getNotaryOfficeCode(), notary.getUsername());
+                    });
         });
 
     }
 
     private Optional<NotaryOffice> findFirstAvailableNotaryOffice(Set<NotaryOffice> notaryOfficeSet) {
-        return notaryOfficeSet.stream()
+        return notaryOfficeSet
+                .stream()
                 .filter(notaryOffice -> preferenceTable.get(notaryOffice.getNotaryOfficeCode()).isEmpty())
                 .findFirst();
     }

@@ -1,10 +1,11 @@
 package com.raccoon.prefsimnotary.auth;
 
-import com.raccoon.prefsimnotary.exception.PrefsimException;
-import com.raccoon.prefsimnotary.model.dto.response.AccessTokenResponseDto;
-import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
@@ -16,51 +17,59 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 @Component
+@RequiredArgsConstructor
 public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final TokenProvider tokenProvider;
-    private final HandlerExceptionResolver exceptionResolver;
-
-    public JwtTokenFilter(TokenProvider tokenProvider,
-                          @Qualifier("handlerExceptionResolver") HandlerExceptionResolver exceptionResolver) {
-        this.tokenProvider = tokenProvider;
-        this.exceptionResolver = exceptionResolver;
-    }
+    private final UserDetailsService userDetailsService;
+    private final HandlerExceptionResolver handlerExceptionResolver;
 
     @Override
-    protected void doFilterInternal(@NonNull HttpServletRequest request,
-                                    @NonNull HttpServletResponse response,
-                                    @NonNull FilterChain filterChain) throws IOException, ServletException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws IOException, ServletException {
 
+        final Consumer<String> authSetter = token -> SecurityContextHolder
+                .getContext()
+                .setAuthentication(getAuthenticationFromToken(token));
         try {
-            final Consumer<AccessTokenResponseDto> authSetter = token -> SecurityContextHolder.getContext()
-                    .setAuthentication(tokenProvider.getAuthentication(token));
-            getTokenFromRequest(request).ifPresent(authSetter);
+
+            //if request has bearer token extract and authenticate else clear context
+            extractTokenFromRequest(request).ifPresentOrElse(authSetter, SecurityContextHolder::clearContext);
+
+            //after authentication continue dispatcher
             filterChain.doFilter(request, response);
-        } catch (PrefsimException exception) {
-            SecurityContextHolder.clearContext();
-            exceptionResolver.resolveException(request, response, null, exception);
+
+        } catch (Exception exception) {
+            handlerExceptionResolver.resolveException(request, response, null, exception);
         }
     }
 
-    private Optional<AccessTokenResponseDto> getTokenFromRequest(HttpServletRequest request) {
+
+    private Authentication getAuthenticationFromToken(String token) {
+
+        //resolve jwt and find username
+        final String username = tokenProvider.getUsernameFromToken(token);
+
+        //find user by username
+        final UserDetails user = userDetailsService.loadUserByUsername(username);
+
+        // generate authentication token for setting security context
+        return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+    }
+
+    private Optional<String> extractTokenFromRequest(HttpServletRequest request) {
 
         final String bearerPrefix = "Bearer ";
         final String authHeaderKey = "Authorization";
 
-        final Predicate<String> isBearer = authHeader -> authHeader.startsWith(bearerPrefix);
-        final Function<String, String> extractToken = authHeader -> authHeader.substring(bearerPrefix.length());
-        final Function<String, AccessTokenResponseDto> convertTokenResponse = AccessTokenResponseDto::new;
-
+        //if exists bearer token in Authorization header, extract and return else return empty
         return Optional.ofNullable(request.getHeader(authHeaderKey))
                 .stream()
-                .filter(isBearer)
-                .map(extractToken)
-                .map(convertTokenResponse)
+                .filter(authHeader -> authHeader.startsWith(bearerPrefix))
+                .map(authHeader -> authHeader.substring(bearerPrefix.length()))
                 .findAny();
     }
 }

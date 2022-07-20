@@ -1,8 +1,6 @@
-package com.raccoon.prefsimnotary.model.document;
+package com.raccoon.prefsimnotary.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.raccoon.prefsimnotary.model.document.embedded.AnnualTransactionInfo;
-import com.raccoon.prefsimnotary.model.document.embedded.Contact;
 import com.raccoon.prefsimnotary.model.enums.Status;
 import lombok.Builder;
 import lombok.Data;
@@ -15,11 +13,8 @@ import java.util.Set;
 @Document
 @Builder
 @Data
-public class NotaryOffice {
+public class NotaryOffice extends BaseEntity {
 
-    @JsonIgnore
-    @Id
-    private String id;
     private String notaryOfficeCode;
     private String name;
     private Integer notaryOfficeClass;

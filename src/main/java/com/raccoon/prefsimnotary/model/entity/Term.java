@@ -1,4 +1,4 @@
-package com.raccoon.prefsimnotary.model.document;
+package com.raccoon.prefsimnotary.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.raccoon.prefsimnotary.model.enums.Status;
@@ -10,17 +10,13 @@ import java.time.LocalDate;
 
 @Document
 @Data
-public class Term {
+public class Term extends BaseEntity {
 
-    @JsonIgnore
-    @Id
-    private String id;
     private Integer termCode;
     private LocalDate startDate;
     private LocalDate endDate;
     @JsonIgnore
     private Status status;
-
 
 
 }

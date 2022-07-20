@@ -1,11 +1,12 @@
 package com.raccoon.prefsimnotary.repository;
 
+import com.raccoon.prefsimnotary.model.entity.Notary;
 import com.raccoon.prefsimnotary.model.entity.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;
 
-public interface UserRepository extends MongoRepository<User, String> {
+public interface NotaryRepository extends MongoRepository<Notary, String> {
 
     Optional<User> findByUsername(String username);
 

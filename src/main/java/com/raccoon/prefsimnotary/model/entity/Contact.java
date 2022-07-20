@@ -1,4 +1,4 @@
-package com.raccoon.prefsimnotary.model.document.embedded;
+package com.raccoon.prefsimnotary.model.entity;
 
 import lombok.Builder;
 import lombok.Data;

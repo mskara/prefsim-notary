@@ -1,6 +1,6 @@
 package com.raccoon.prefsimnotary.service;
 
-import com.raccoon.prefsimnotary.model.document.Term;
+import com.raccoon.prefsimnotary.model.entity.Term;
 
 import java.util.List;
 

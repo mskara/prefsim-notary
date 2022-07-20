@@ -2,9 +2,9 @@ package com.raccoon.prefsimnotary.service.impl;
 
 import com.raccoon.prefsimnotary.exception.ApiError;
 import com.raccoon.prefsimnotary.exception.PrefsimException;
-import com.raccoon.prefsimnotary.model.document.NotaryOffice;
-import com.raccoon.prefsimnotary.model.document.embedded.AnnualTransactionInfo;
-import com.raccoon.prefsimnotary.model.document.embedded.Contact;
+import com.raccoon.prefsimnotary.model.entity.NotaryOffice;
+import com.raccoon.prefsimnotary.model.entity.AnnualTransactionInfo;
+import com.raccoon.prefsimnotary.model.entity.Contact;
 import com.raccoon.prefsimnotary.model.dto.file.TnbNotaryFileDto;
 import com.raccoon.prefsimnotary.model.dto.file.TnbNotaryOfficeIncomeFileDto;
 import com.raccoon.prefsimnotary.model.enums.Status;
@@ -38,7 +38,7 @@ public class NotaryOfficeServiceImpl implements NotaryOfficeService {
     @Override
     public NotaryOffice getNotaryOffice(String notaryOfficeCode) {
         return notaryOfficeRepository.findByNotaryOfficeCode(notaryOfficeCode)
-                .orElseThrow(() -> new PrefsimException(ApiError.NOTARY_OFFICE_NOT_FOUND,
+                .orElseThrow(() -> new PrefsimException(ApiError.RESOURCE_NOT_FOUND,
                         "Notary Office not found! :" + notaryOfficeCode));
     }
 

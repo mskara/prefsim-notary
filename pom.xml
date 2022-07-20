@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.raccoon</groupId>
-	<artifactId>prefsim-notaryInfo</artifactId>
+	<artifactId>prefsim-notary</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>prefsim-notaryInfo</name>
+	<name>prefsim-notary</name>
 	<description>Notary Preference Simulation</description>
 	<properties>
 		<java.version>17</java.version>
